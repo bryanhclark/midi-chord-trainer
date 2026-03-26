@@ -2,7 +2,7 @@
 A [Chord Trainer](https://bryanadams.io/midi-chord-trainer) built with:
 - [Vite](https://vitejs.dev/)
 - [Tone.js](https://tonejs.github.io/) 
-- [Shadcn](https://ui.shadcn.com/).q
+- [Shadcn](https://ui.shadcn.com/)
 
 ## install
 
