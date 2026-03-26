@@ -1,14 +1,17 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useMidi } from "@/contexts/MidiContext"
 import { useEffect, useRef } from "react"
 import * as Tone from "tone"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card'
 
+const C_MAJOR_CHORD = ["C3", "E3", "G3"]
 
 export const Synth: React.FC = () => {
   const { midiAccess } = useMidi()
 
   const synthRef = useRef<Tone.PolySynth | null>(null)
-  const [currentNotes, setCurrentNotes] = React.useState<string[]>([])
+  const [currentNotes, setCurrentNotes] = useState<string[]>([])
+  const [isChordCorrect, setIsChordCorrect] = useState<boolean>(false)
 
   const getMidiMessage = (message: MIDIMessageEvent) => {
     if (!message.data) return
@@ -51,10 +54,28 @@ export const Synth: React.FC = () => {
 
   }, [midiAccess])
 
+  useEffect(() => {
+    // if currentNotes === C_MAJOR_CHORD, show success message
+    if (currentNotes.length === C_MAJOR_CHORD.length && currentNotes.every((note) => C_MAJOR_CHORD.includes(note))) {
+      setIsChordCorrect(true)
+      setTimeout(() => {
+        setIsChordCorrect(false)
+      }, 1000)
+    }
+  }, [currentNotes])
+
   return (
-    <div>
-      <h1>Synth</h1>
-      <p>{currentNotes}</p>
-    </div>
+    <Card size="sm" className='h-50 w-100'>
+      <CardHeader>
+        <CardTitle>Synth</CardTitle>
+        <CardDescription>Play C MAJOR: </CardDescription>
+        {isChordCorrect && <CardDescription>Success!</CardDescription>}
+      </CardHeader>
+      <CardContent className="flex flex-row justify-center gap-2">
+        {currentNotes.map((note) => (
+          <div className='flex' key={note}>{note}</div>
+        ))}
+      </CardContent>
+    </Card>
   )
 }
