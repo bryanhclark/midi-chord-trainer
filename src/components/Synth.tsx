@@ -3,10 +3,15 @@ import { useMidi } from "@/contexts/MidiContext"
 import { useEffect, useRef } from "react"
 import * as Tone from "tone"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card'
+import type { Quiz } from '@/lib/types'
 
 const C_MAJOR_CHORD = ["C3", "E3", "G3"]
 
-export const Synth: React.FC = () => {
+type SynthProps = {
+  quiz: Quiz;
+}
+
+export const Synth: React.FC<SynthProps> = ({ quiz }) => {
   const { midiAccess } = useMidi()
 
   const synthRef = useRef<Tone.PolySynth | null>(null)
@@ -54,9 +59,12 @@ export const Synth: React.FC = () => {
 
   }, [midiAccess])
 
+  // TODO: create reducer to track currentChord and then check if currentChord is correct 
+  // - if correct: set isChordCorrect to true and move to next chord
+  // - if incorrect: set isChordCorrect to false and retry chord
+  const firstChord = quiz.chords[0]
   useEffect(() => {
-    // if currentNotes === C_MAJOR_CHORD, show success message
-    if (currentNotes.length === C_MAJOR_CHORD.length && currentNotes.every((note) => C_MAJOR_CHORD.includes(note))) {
+    if (currentNotes.length === firstChord.notes.length && currentNotes.every((note) => firstChord.notes.includes(note))) {
       setIsChordCorrect(true)
       setTimeout(() => {
         setIsChordCorrect(false)
@@ -68,7 +76,7 @@ export const Synth: React.FC = () => {
     <Card size="sm" className='h-50 w-100'>
       <CardHeader>
         <CardTitle>Synth</CardTitle>
-        <CardDescription>Play C MAJOR: </CardDescription>
+        <CardDescription>Play {firstChord.name}: </CardDescription>
         {isChordCorrect && <CardDescription>Success!</CardDescription>}
       </CardHeader>
       <CardContent className="flex flex-row justify-center gap-2">

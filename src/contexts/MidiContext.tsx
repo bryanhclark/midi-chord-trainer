@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useRef, } from 'react';
+import React, { createContext, useEffect, } from 'react';
 
 type IMidiContext = {
   midiAccess: MIDIAccess | null
